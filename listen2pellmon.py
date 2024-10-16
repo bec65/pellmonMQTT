@@ -5,6 +5,7 @@ import paho.mqtt.client as mosquitto
 
 #define what happens after connection
 def on_connect(*args):
+    """ What do do on_connect """
     print(Connected);
 
 #On recipt of a message
@@ -29,4 +30,3 @@ mqttc.subscribe("pellmon/+")
 while True:
     mqttc.loop()
     pass
-
