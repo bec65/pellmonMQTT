@@ -1,0 +1,4 @@
+paho-mqtt==2.1.0
+pycairo==1.27.0
+PyGObject==3.50.0
+simplejson==3.19.3
