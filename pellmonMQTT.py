@@ -164,7 +164,8 @@ if __name__ == '__main__':
     def on_disconnect(*args):
         """ on_disconnect """
         print("Disconnecting from MQTT: ")
-        mqtt_connected = False
+        #mqtt_connected = False
+        Status.mqtt_connected = False
 
     def on_message(*args):
         """Call the DBUS setItem method with item name and payload
@@ -224,7 +225,7 @@ if __name__ == '__main__':
     mqttc.on_subscribe = on_subscribe
     mqttc.on_message = on_message
 
-    print("topic: " + arguments.topic + " connecting on " + arguments.dbus)
+    print(f'topic: {arguments.topic} connecting on {arguments.dbus}')
     dbus = Dbus_handler(mqttc, arguments.dbus, arguments.topic)
     dbus.start()
 
@@ -234,8 +235,6 @@ if __name__ == '__main__':
         try:
             mqttc.username_pw_set(username=arguments.username, password=arguments.password)
             mqttc.connect(arguments.host, int(arguments.port), 60)
-            #mqttc.reconnect_delay_set(120, 300, True)
-            #mqttc.reconnect_delay_set(120, 300, True)
             mqttc.reconnect_delay_set(min_delay=1, max_delay=120)
             connect = True
         except KeyboardInterrupt:
@@ -254,8 +253,9 @@ if __name__ == '__main__':
         main_loop.run()
     except KeyboardInterrupt:
         print("Caught keyboard interrupt - MQTT broker leaving")
+    finally:
         mqttc.loop_stop()
         mqttc.disconnect()
-        #pass
-    finally:
+        if dbus.notify:
+            dbus.dbus_disconnect(None, None)    # Call the disconnect method if needed
         print("End of Job")
