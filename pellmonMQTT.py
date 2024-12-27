@@ -15,20 +15,23 @@
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 """
 from builtins import object
+from typing import Any
 import sys
 import argparse
 from time import sleep
 from gi.repository import Gio, GLib
 import paho.mqtt.client as mosquitto
+import json
 import simplejson
 
 class DbusNotConnected(Exception):
-    """ This exception is raised when Dbus is not connected. """
-    print(f'DbusNotConnected: {str(Exception)}')
+    def __init__(self, message: str) -> None:
+        super().__init__(message)
+        print(f'DbusNotConnected: {message}')
 
 class Dbus_handler(object):
     """ The Dbus_handler """
-    def __init__(self, mq, bus, mqttTopic):
+    def __init__(self, mq, bus, mqttTopic) -> None:
         if bus == 'SYSTEM':
             self.bustype = Gio.BusType.SYSTEM
         else:
@@ -36,7 +39,7 @@ class Dbus_handler(object):
         self.mq = mq
         self.mqttTopic = mqttTopic
 
-    def start(self):
+    def start(self) -> None:
         """ start """
         self.notify = None
         self.bus = Gio.bus_get_sync(self.bustype, None)
@@ -48,7 +51,7 @@ class Dbus_handler(object):
             self.dbus_disconnect,
             )
 
-    def dbus_connect(self, connection, name, owner):
+    def dbus_connect(self, connection: Gio.DBusConnection, name: str, owner: str) -> None:
         """ dbus_connect """
         self.notify = Gio.DBusProxy.new_sync(
             self.bus,
@@ -70,7 +73,7 @@ class Dbus_handler(object):
             except RuntimeError as error:
                 print(f'Exeption caught in Publish - dbus_connect: {error}')
 
-    def subscribe(self):
+    def subscribe(self) -> None:
         """Listen to the DBUS 'item changed' signal and publish changes at pellmon/_item_ """
         def on_signal(proxy, sender_name, signal_name, parameters):
             parameter = parameters[0]
@@ -92,14 +95,14 @@ class Dbus_handler(object):
 
         self.notify.connect("g-signal", on_signal)
 
-    def dbus_disconnect(self, connection, name):
+    def dbus_disconnect(self, connection, name: str) -> None:
         """ dbus_disconnect """
         Status.dbus_connected = False
         Status.subscribed = False
         if self.notify:
             self.notify = None
 
-    def getItem(self, itm):
+    def getItem(self, itm: str) -> Any:
         """ getItem """
         if self.notify:
             try:
