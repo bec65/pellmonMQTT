@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#! /usr/bin/env python
 # -*- coding: utf-8 -*-
 
 """
@@ -20,8 +20,7 @@ import sys
 import argparse
 from time import sleep
 from gi.repository import Gio, GLib
-import paho.mqtt.client as mosquitto
-import json
+import paho.mqtt.client as mqtt
 import simplejson
 
 class DbusNotConnected(Exception):
@@ -143,13 +142,14 @@ class Dbus_handler(object):
             return self.notify.getMenutags()
         raise DbusNotConnected("server not running")
 
-class Status:
+class Status:    # pylint: disable=R0903
     """ Class Status """
     mqtt_connected = False
     dbus_connected = False
     subscribed = False
 
 if __name__ == '__main__':
+
     def on_connect(*args):
         """ on_connect """
         print("broker connected")
@@ -222,7 +222,7 @@ if __name__ == '__main__':
     GLib.timeout_add_seconds(1, manager)
 
     #create a broker
-    mqttc = mosquitto.Client(protocol=mosquitto.MQTTv311)
+    mqttc = mqtt.Client(protocol=mqtt.MQTTv311)
     mqttc.on_connect = on_connect
     mqttc.on_publish = on_publish
     mqttc.on_subscribe = on_subscribe
