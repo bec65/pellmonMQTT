@@ -196,13 +196,11 @@ if __name__ == '__main__':
 
     def on_publish(*args):
         """ What do when calling on_publish """
-        print("Published: ", args)
-        #pass #print 'published'
+        _ = args        # Ignored, not used
 
     def on_subscribe(*args):
         """ on_subscribe """
-        print("Subscribed: ", args)
-        #pass #print 'subscribed'
+        _ = args        # Ignored, not used
 
     def on_disconnect(*args):
         """ on_disconnect """
@@ -237,7 +235,7 @@ if __name__ == '__main__':
     parser.add_argument('-H', '--host',
                         default='localhost',
                         help='mqtt host to connect to. Defaults to localhost')
-    parser.add_argument('-p', '--port',
+    parser.add_argument('-P', '--port',
                         default='1883',
                         help='network port to connect to. Defaults to 1883')
     parser.add_argument('-d', '--dbus',
@@ -250,7 +248,7 @@ if __name__ == '__main__':
     parser.add_argument('-u', '--username',
                         default='',
                         help='Define a username which will be used to connect to the mqtt broker')
-    parser.add_argument('-P', '--password',
+    parser.add_argument('-p', '--password',
                         default='',
                         help='Define a password which will be used to connect to the mqtt broker')
     arguments = parser.parse_args()
@@ -290,7 +288,8 @@ if __name__ == '__main__':
         except OSError as os_error:
             print(f'OS error: {os_error}')
             sleep(5)
-        # Catch-all for errors not handled previously. Add pylint disable for Catching too general exception
+        # Catch-all for errors not handled previously.
+        # Add pylint disable for Catching too general exception
         except Exception as error:               # pylint: disable=W0718
             print(f'An unspected error occured: {error}')
             sleep(5)
