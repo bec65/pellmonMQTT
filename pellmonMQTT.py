@@ -20,8 +20,9 @@ import sys
 import argparse
 from time import sleep
 from gi.repository import Gio, GLib
-import paho.mqtt.client as mqtt    # pylint: disable=E0401
-import simplejson                  # pylint: disable=E0401
+import paho.mqtt.client as mqtt        # pylint: disable=E0401
+from paho.mqtt import MQTTException    # pylint: disable=E0401
+import simplejson                      # pylint: disable=E0401
 
 class DbusNotConnected(Exception):
     """Exception raised when there is an issue with the D-Bus connection.
@@ -247,9 +248,11 @@ if __name__ == '__main__':
                         help='Defines the topic to publish/listen to, default is pellmon')
     parser.add_argument('-u', '--username',
                         default='',
+                        #required=True,           # Should username/password be required ??
                         help='Define a username which will be used to connect to the mqtt broker')
     parser.add_argument('-p', '--password',
                         default='',
+                        #required=True,           # Should username/password be required ??
                         help='Define a password which will be used to connect to the mqtt broker')
     arguments = parser.parse_args()
 
@@ -273,6 +276,7 @@ if __name__ == '__main__':
 
     CONNECT = False
     print("MQTT broker not connected yet..")
+    print(f'Client connecting to {arguments.host}')
     while not CONNECT:
         try:
             mqttc.username_pw_set(username=arguments.username, password=arguments.password)
@@ -282,11 +286,15 @@ if __name__ == '__main__':
         except KeyboardInterrupt:
             print("Error caught on connect")
             raise
-        except mqtt.MQTTException as mqtt_error:
+        #except mqtt.MQTTException as mqtt_error:
+        except MQTTException as mqtt_error:
             print(f'MQTT error: {mqtt_error}')
             sleep(5)
         except OSError as os_error:
-            print(f'OS error: {os_error}')
+            if os_error.errno == 111:
+                print("Connection refused: Is the broker running, or is userid/password correct ?")
+            else:
+                print(f'OS error: {os_error}')
             sleep(5)
         # Catch-all for errors not handled previously.
         # Add pylint disable for Catching too general exception
