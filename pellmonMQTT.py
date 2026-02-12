@@ -189,7 +189,7 @@ class Status:    # pylint: disable=R0903
 if __name__ == '__main__':
 
     def on_connect(*args):
-        """ on_connect """
+        """ on_connect. Connect to the broker and subscribe to the topic defined in arguments """
         _ = args        # Unused for now, surpressing
         print("broker connected")
         Status.subscribed = False
@@ -200,11 +200,11 @@ if __name__ == '__main__':
         _ = args        # Ignored, not used
 
     def on_subscribe(*args):
-        """ on_subscribe """
+        """ on_subscribe. What do when calling on_subscribe """
         _ = args        # Ignored, not used
 
     def on_disconnect(*args):
-        """ on_disconnect """
+        """ on_disconnect. What do when calling on_disconnect """
         _ = args        # Unused for now, surpressing
         print("Disconnecting from MQTT: ")
         #mqtt_connected = False
