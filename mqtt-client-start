@@ -1,3 +1,3 @@
 #!/bin/bash
 
-python pellmonMQTT.py -d SYSTEM -H 192.168.1.69 -p 1883 --username mosquitto --password=mosquitto
+python pellmonMQTT.py -d SYSTEM -H homeassistant.becnet.home -p 1883 --username mosquitto --password=mosquitto
