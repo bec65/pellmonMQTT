@@ -226,6 +226,7 @@ if __name__ == '__main__':
         """ Manager binding dbus and mqtt together """
         if not Status.subscribed:
             print('Manager: Not subscribed')
+            print(f'Manager: dbus_connected: {Status.dbus_connected}, mqtt_connected: {Status.mqtt_connected}')
             if Status.dbus_connected and Status.mqtt_connected:
                 print('Manager: subscribing...')
                 dbus.subscribe()
@@ -278,6 +279,11 @@ if __name__ == '__main__':
     print("MQTT broker not connected yet..")
     print(f'Client connecting to {arguments.host}')
     while not CONNECT:
+        """         
+        Attempt to connect to the MQTT broker. 
+        If connection fails, catch the exception and print an error message.
+        If the connection is successful, set CONNECT to True and start the MQTT loop. """
+
         try:
             mqttc.username_pw_set(username=arguments.username, password=arguments.password)
             mqttc.connect(arguments.host, int(arguments.port), 60)
