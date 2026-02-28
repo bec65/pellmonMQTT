@@ -214,8 +214,8 @@ if __name__ == '__main__':
         """Call the DBUS set_item method with item name and payload
         from topic subscription at pellmon/settings/_item_"""
         print('subscribed item changed')
-        msg = args[-1]
-        item = msg.topic.split('/')[-1]
+        msg = args[-1] # The message is the last argument passed to the callback function
+        item = msg.topic.split('/')[-1] # Extract the item name from the topic by splitting the topic string and taking the last part
         try:
             dbus.set_item(item, msg.payload)
             print(f"Set {item}={msg.payload}, {dbus.set_item(item, msg.payload.decode('utf-8'))}" )
@@ -285,13 +285,14 @@ if __name__ == '__main__':
         If the connection is successful, set CONNECT to True and start the MQTT loop. """
 
         try:
-            mqttc.username_pw_set(username=arguments.username, password=arguments.password)
-            mqttc.connect(arguments.host, int(arguments.port), 60)
-            mqttc.reconnect_delay_set(min_delay=1, max_delay=120)
+            mqttc.username_pw_set(username=arguments.username, password=arguments.password) # Set username and password for MQTT connection
+            mqttc.connect(arguments.host, int(arguments.port), 60) # Connect to the MQTT broker with the specified host, port, and keepalive interval
+            mqttc.reconnect_delay_set(min_delay=1, max_delay=120) # Set the reconnection delay for MQTT connection attempts
             CONNECT = True
-        except KeyboardInterrupt:
+        except KeyboardInterrupt: # Catch keyboard interrupt to allow graceful shutdown
             print("Error caught on connect")
             raise
+
         #except mqtt.MQTTException as mqtt_error:
         except MQTTException as mqtt_error:
             print(f'MQTT error: {mqtt_error}')
